@@ -153,7 +153,7 @@ export function Contact() {
   const submit = async (e) => {
     e.preventDefault(); const f = new FormData(e.target); setSt('sending');
     try {
-      const r = await fetch('/', { method: 'POST', headers: { 'Content-Type': 'application/x-www-form-urlencoded' }, body: new URLSearchParams({ 'form-name': 'contact', ...Object.fromEntries(f) }).toString() });
+      const r = await fetch('/forms.html', { method: 'POST', headers: { 'Content-Type': 'application/x-www-form-urlencoded' }, body: new URLSearchParams({ 'form-name': 'contact', ...Object.fromEntries(f) }).toString() });
       if (!r.ok) throw 0; setSt('ok'); e.target.reset();
     } catch { setSt('err'); }
   };
