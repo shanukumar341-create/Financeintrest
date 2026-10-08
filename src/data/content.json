@@ -1,0 +1,199 @@
+{
+ "settings": {
+  "brand": "FinanceIntrest",
+  "tagline": "TIME IN THE MARKET BEATS TIMING THE MARKET",
+  "whatsapp": "917004835306",
+  "email": "shanukumar341@gmail.com",
+  "phone": "+917004835306",
+  "address": "Delhi ,India",
+  "adminHash": "5570a7dfc04c9fad0cde834cd06e0320f6c2d7a46467aa2dcce839a2e4ba5d48",
+  "ticker": [
+   {
+    "s": "^NSEI",
+    "n": "NIFTY 50"
+   },
+   {
+    "s": "^BSESN",
+    "n": "SENSEX"
+   },
+   {
+    "s": "^NSEBANK",
+    "n": "BANK NIFTY"
+   },
+   {
+    "s": "^INDIAVIX",
+    "n": "INDIA VIX"
+   },
+   {
+    "s": "BZ=F",
+    "n": "BRENT CRUDE"
+   },
+   {
+    "s": "^TNX",
+    "n": "US 10Y YIELD"
+   },
+   {
+    "s": "^TYX",
+    "n": "US 30Y YIELD"
+   },
+   {
+    "s": "DX-Y.NYB",
+    "n": "DOLLAR INDEX"
+   },
+   {
+    "s": "GC=F",
+    "n": "GOLD"
+   },
+   {
+    "s": "SI=F",
+    "n": "SILVER"
+   },
+   {
+    "s": "USDINR=X",
+    "n": "USD/INR"
+   },
+   {
+    "s": "^GSPC",
+    "n": "S&P 500"
+   },
+   {
+    "s": "^NDX",
+    "n": "NASDAQ 100"
+   },
+   {
+    "s": "^DJI",
+    "n": "DOW JONES"
+   },
+   {
+    "s": "YM=F",
+    "n": "DOW FUTURES"
+   },
+   {
+    "s": "ES=F",
+    "n": "S&P 500 FUTURES"
+   }
+  ],
+  "cloudName": "hbshez7n",
+  "uploadPreset": "bullbear_unsigned"
+ },
+ "articles": [
+  {
+   "slug": "why-risk-management-comes-first",
+   "title": "Why risk management comes first",
+   "category": "Trading Psychology",
+   "date": "2026-10-08",
+   "summary": "Entries get attention, but position size decides who survives.",
+   "cover": "",
+   "published": true,
+   "body": "## The one rule\n\nRisk a **small, fixed percent** of capital on every trade. Most blown accounts come from oversized positions, not bad analysis.\n\n### A simple checklist\n\n- Decide the stop-loss before the entry\n- Size the position from the stop distance\n- Never add to a losing trade\n\n> Protect capital first. Profits are a by-product of staying in the game.\n\nEdit or delete this sample from the **Admin panel** (/admin)."
+  }
+ ],
+ "views": [
+  {
+   "title": "Nifty weak below 22,700 – watch 22,500",
+   "date": "2026-10-07",
+   "bias": "Bearish",
+   "body": "Index failed to hold the opening range and is sliding with banks. Sustained trade below 22,500 opens 22,350. A reclaim of 22,720 flips the bias."
+  }
+ ],
+ "stocks": [
+  {
+   "symbol": "",
+   "name": "",
+   "action": "",
+   "entry": "",
+   "target": "",
+   "sl": "",
+   "note": "",
+   "image": ""
+  },
+  {
+   "symbol": "",
+   "name": "",
+   "action": "",
+   "entry": "",
+   "target": "",
+   "sl": "",
+   "note": "",
+   "image": ""
+  },
+  {
+   "symbol": "INFY",
+   "name": "INFOSYS LTD",
+   "action": "Buy",
+   "entry": "1230",
+   "target": "+8%",
+   "sl": "-3%",
+   "note": "Sample entry. Replace from the admin panel."
+  }
+ ],
+ "advice": [
+  {
+   "title": "Never risk more than 1-2% per trade",
+   "body": "Size positions from your stop-loss distance, not from conviction. Survive first, compound later."
+  },
+  {
+   "title": "Build SIPs in the dips",
+   "body": "Stagger investments over months so one bad entry cannot hurt the whole portfolio."
+  }
+ ],
+ "news": [
+  {
+   "title": "Add your own market headline here",
+   "source": "Admin",
+   "url": "#",
+   "date": "2026-10-07"
+  }
+ ],
+ "courses": [
+  {
+   "title": "Price Action & Candlestick Mastery",
+   "level": "Beginner to Intermediate",
+   "duration": "6 weeks",
+   "price": "₹9,999",
+   "desc": "Read raw price: structure, candlestick patterns, support and resistance, entries and exits."
+  },
+  {
+   "title": "Risk Management & Trading Psychology",
+   "level": "All levels",
+   "duration": "3 weeks",
+   "price": "₹4,999",
+   "desc": "Position sizing, drawdown control and the habits that keep traders in the game."
+  }
+ ],
+ "calls": [
+  {
+   "plan": "Monthly",
+   "price": "₹2,999",
+   "period": "/ month",
+   "features": "Intraday & swing calls, Entry target and stop-loss, WhatsApp alerts"
+  },
+  {
+   "plan": "Quarterly",
+   "price": "₹7,499",
+   "period": "/ 3 months",
+   "features": "Everything in Monthly, Weekly market outlook, Priority doubt support"
+  }
+ ],
+ "classes": [
+  {
+   "title": "Live Options Strategy Workshop",
+   "when": "Every Saturday, 11:00 AM IST",
+   "mode": "Zoom",
+   "price": "₹999",
+   "desc": "Live chart walk-through, Q&A and trade planning for the coming week."
+  }
+ ],
+ "plans": [
+  {
+   "name": "Advisory Portfolio",
+   "fee": "Custom",
+   "desc": "Goal-based allocation across equity, debt and gold with quarterly reviews."
+  },
+  {
+   "name": "Active Trading Support",
+   "fee": "Custom",
+   "desc": "Risk rules, trade journaling and review for your self-managed account."
+  }
+ ]
+}
