@@ -3,8 +3,11 @@ import { Link, NavLink, Outlet, Route, Routes, useLocation } from 'react-router-
 import { Menu, X } from 'lucide-react';
 import C from './data/content.json';
 import { LogoMark, Quote, QuotesProvider, useQuotes } from './lib.jsx';
-import { ArticleView, Articles, Calls, Contact, Courses, Home, LiveClasses, NotFound, Portfolio } from './pages.jsx';
+import { ArticleView, Articles, Calls, Contact, Courses, NotFound, Portfolio } from './pages.jsx';
 import About from './About.jsx';
+import Home from './Home.jsx';
+import LiveClasses from './LiveClasses.jsx';
+import ViewDetail, { ViewsList } from './ViewDetail.jsx';
 import Admin from './Admin.jsx';
 
 const NAV = [['/', 'Home'], ['/about', 'About'], ['/articles', 'Articles'], ['/courses', 'Courses'], ['/calls', 'Paid Calls'], ['/live-classes', 'Live Classes'], ['/portfolio', 'Portfolio'], ['/contact', 'Contact']];
@@ -48,6 +51,7 @@ export default function App() {
     <Route path="/admin" element={<Admin />} />
     <Route element={<Layout />}>
       <Route index element={<Home />} /><Route path="about" element={<About />} />
+      <Route path="views" element={<ViewsList />} /><Route path="views/:slug" element={<ViewDetail />} />
       <Route path="articles" element={<Articles />} /><Route path="articles/:slug" element={<ArticleView />} />
       <Route path="courses" element={<Courses />} /><Route path="calls" element={<Calls />} />
       <Route path="live-classes" element={<LiveClasses />} /><Route path="portfolio" element={<Portfolio />} />

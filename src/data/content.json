@@ -74,7 +74,8 @@
    }
   ],
   "cloudName": "hbshez7n",
-  "uploadPreset": "bullbear_unsigned"
+  "uploadPreset": "bullbear_unsigned",
+  "heroImage": "https://res.cloudinary.com/hbshez7n/image/upload/v1792135796/azozoe1bpmhanwo07od9.png"
  },
  "articles": [
   {
@@ -98,33 +99,14 @@
  ],
  "stocks": [
   {
-   "symbol": "",
-   "name": "",
-   "action": "",
-   "entry": "",
-   "target": "",
-   "sl": "",
-   "note": "",
-   "image": ""
-  },
-  {
-   "symbol": "",
-   "name": "",
-   "action": "",
-   "entry": "",
-   "target": "",
-   "sl": "",
-   "note": "",
-   "image": ""
-  },
-  {
    "symbol": "INFY",
    "name": "INFOSYS LTD",
    "action": "Buy",
    "entry": "1230",
    "target": "+8%",
    "sl": "-3%",
-   "note": "Sample entry. Replace from the admin panel."
+   "note": "Sample entry. Replace from the admin panel.",
+   "image": "https://res.cloudinary.com/hbshez7n/image/upload/v1792134757/kmdomws0nh3znvqxz8g4.png"
   }
  ],
  "advice": [
@@ -194,6 +176,41 @@
    "name": "Active Trading Support",
    "fee": "Custom",
    "desc": "Risk rules, trade journaling and review for your self-managed account."
+  }
+ ],
+ "recordings": [
+  {
+   "title": "All Candlestick Patterns | Free Complete #CandlestickPatterns Course ",
+   "url": "https://youtu.be/I8gdOMVIySk?si=4Sn8i5qkPrvdxY4O",
+   "topic": "",
+   "date": "2026-10-16",
+   "desc": "candlestick chart ko kaise samjhe\ncandlestick chart support and resistance\ncandlestick chart\ncandlestick chart technical analysis\ncandlestick chart animantion\ncandlestick chart in hindi\ncandlestick pattern in hindi\ncandlestick pattern support resistance\ncandlestick psychology\ncandlestick price action\ncandlestick tradingviews\ntradingviews\ncandlestick chart pattern hindi\ncandlestick pattern entry exit\ncandlestick pattern chart levels\nall chart pattern\nstock market\ncandlestick pattern\n\nLearn All 3 #CandlestickPatterns Analysis for ShareMarket Trading & TechnicalAnalysis\nLearn All #CandlestickPatterns Analysis for #StockMarket Trading & #TechnicalAnalysis\n\n#candlestickpatternsforbeginners #candlestickchartpatterns #candlestick \n#candlestickpattern #stockmarket "
+  }
+ ],
+ "topStocks": [
+  {
+   "symbol": "HDFCBANK",
+   "name": "",
+   "liveSymbol": "",
+   "action": "BUY",
+   "entry": "720",
+   "target": "737",
+   "sl": "705",
+   "note": "",
+   "image": "https://res.cloudinary.com/hbshez7n/image/upload/v1792136759/lklahoxpxshvcbk3io10.png",
+   "postedAt": "2026-10-16T07:45:14.728Z"
+  },
+  {
+   "symbol": "RELIANCE",
+   "name": "",
+   "liveSymbol": "",
+   "action": "BUY",
+   "entry": "1160",
+   "target": "1245",
+   "sl": "1120",
+   "note": "",
+   "image": "https://res.cloudinary.com/hbshez7n/image/upload/v1792136630/cvn3bet9dwrvgidq2lo2.png",
+   "postedAt": "2026-10-16T07:43:03.229Z"
   }
  ]
 }

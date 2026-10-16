@@ -1,24 +1,28 @@
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { Image as ImageIcon, Upload } from 'lucide-react';
+import { Image as ImageIcon, RefreshCw, Upload } from 'lucide-react';
 import C from './data/content.json';
 import { Md, img, slugify } from './lib.jsx';
+import { HOURS, timeLeft } from './helpers.js';
 
-// 'image' = optional picture (uploaded to Cloudinary). Articles use 'cover'.
 const SCH = {
   views: ['title', 'date', 'bias', 'body', 'image'],
   stocks: ['symbol', 'name', 'action', 'entry', 'target', 'sl', 'note', 'image'],
+  topStocks: ['symbol', 'name', 'liveSymbol','action', 'entry', 'target', 'sl', 'note', 'image'],
   advice: ['title', 'body', 'image'],
   news: ['title', 'source', 'url', 'date', 'image'],
   courses: ['title', 'level', 'duration', 'price', 'desc', 'image'],
   calls: ['plan', 'price', 'period', 'features', 'image'],
   classes: ['title', 'when', 'mode', 'price', 'desc', 'image'],
+  recordings: ['title', 'url', 'topic', 'date', 'desc'],
   plans: ['name', 'fee', 'desc', 'image'],
 };
 const LONG = ['body', 'desc', 'note', 'features'];
+const HINT = { url: 'url (YouTube video ka link)', liveSymbol: 'liveSymbol (optional, sirf tab jab live price na aaye)' };
+const today = () => new Date().toISOString().slice(0, 10);
+const withDefaults = (d) => ({ ...d, recordings: d.recordings || [], topStocks: d.topStocks || [], articles: d.articles || [] });
 const sha = async (s) => [...new Uint8Array(await crypto.subtle.digest('SHA-256', new TextEncoder().encode(s)))].map((b) => b.toString(16).padStart(2, '0')).join('');
 
-// Unsigned upload straight from the browser to Cloudinary (no API secret needed).
 async function uploadImage(file, s) {
   if (!s.cloudName || !s.uploadPreset) throw new Error('Pehle Settings tab me Cloudinary cloud name aur upload preset daalkar Save karein.');
   if (file.size > 8 * 1024 * 1024) throw new Error('Image 8MB se choti rakhein.');
@@ -59,7 +63,7 @@ function ArticleEditor({ D, set }) {
     if (f === 'title' && (!x.slug || x.slug === slugify(x.title))) x.slug = slugify(v);
     x[f] = v;
   });
-  const add = () => { set((d) => { d.articles.unshift({ slug: '', title: '', category: 'Market Analysis', date: new Date().toISOString().slice(0, 10), summary: '', cover: '', body: '', published: true }); }); setI(0); };
+  const add = () => { set((d) => { d.articles.unshift({ slug: '', title: '', category: 'Market Analysis', date: today(), summary: '', cover: '', body: '', published: true }); }); setI(0); };
   const del = () => { if (confirm('Is article ko delete karein?')) { set((d) => { d.articles.splice(i, 1); }); setI(0); } };
   const insertImg = async (e) => {
     const file = e.target.files[0]; e.target.value = ''; if (!file) return; setBusy(true);
@@ -91,26 +95,46 @@ function ArticleEditor({ D, set }) {
 }
 
 function ListEditor({ tab, D, set }) {
-  return (<div className="space-y-4">{D[tab].map((it, i) => (
-    <div key={i} className="card p-4 grid sm:grid-cols-2 gap-3">{SCH[tab].map((f) => f === 'image' ? (
-      <div key={f} className="sm:col-span-2"><ImageField value={it.image} settings={D.settings} onChange={(v) => set((d) => { d[tab][i].image = v; })} /></div>
-    ) : (
-      <label key={f} className={`text-xs text-slate-400 ${LONG.includes(f) ? 'sm:col-span-2' : ''}`}>{f}
-        {LONG.includes(f) ? <textarea rows="3" className="inp mt-1" value={it[f] ?? ''} onChange={(e) => set((d) => { d[tab][i][f] = e.target.value; })} />
-          : <input className="inp mt-1" value={it[f] ?? ''} onChange={(e) => set((d) => { d[tab][i][f] = e.target.value; })} />}</label>))}
-      <div className="sm:col-span-2 flex gap-2">
-        <button className="btn btn2 !py-1 text-sm" onClick={() => i > 0 && set((d) => { [d[tab][i - 1], d[tab][i]] = [d[tab][i], d[tab][i - 1]]; })}>Upar</button>
-        <button className="btn btn2 !py-1 text-sm dn" onClick={() => confirm('Delete karein?') && set((d) => { d[tab].splice(i, 1); })}>Delete</button></div></div>))}
-    <button className="btn" onClick={() => set((d) => { d[tab].unshift(Object.fromEntries(SCH[tab].map((f) => [f, '']))); })}>+ Add</button></div>);
+  const isTop = tab === 'topStocks';
+  const blank = () => Object.fromEntries([
+    ...SCH[tab].map((f) => [f, f === 'date' ? today() : '']),
+    ...(isTop ? [['postedAt', new Date().toISOString()]] : []),
+  ]);
+  return (<div className="space-y-4">
+    {isTop && <p className="text-xs text-slate-400">Top stocks website par post karne ke {HOURS} ghante baad apne aap hat jaate hain. Dobara dikhana ho to "Renew" dabayein.</p>}
+    {D[tab].map((it, i) => {
+      const left = isTop ? new Date(it.postedAt).getTime() + HOURS * 3600e3 - Date.now() : 0;
+      return (
+        <div key={i} className="card p-4 grid sm:grid-cols-2 gap-3">
+          {isTop && (
+            <div className="sm:col-span-2 flex flex-wrap items-center justify-between gap-2 text-sm">
+              <span className={left > 0 ? 'up' : 'dn'}>{left > 0 ? `Website par live: ${timeLeft(left)} baaki` : 'Expired (website par nahi dikh raha)'}</span>
+              <button className="btn btn2 !py-1 text-sm" onClick={() => set((d) => { d[tab][i].postedAt = new Date().toISOString(); })}><RefreshCw size={14} /> Renew {HOURS}h</button>
+            </div>
+          )}
+          {SCH[tab].map((f) => f === 'image' ? (
+            <div key={f} className="sm:col-span-2"><ImageField value={it.image} settings={D.settings} onChange={(v) => set((d) => { d[tab][i].image = v; })} /></div>
+          ) : (
+            <label key={f} className={`text-xs text-slate-400 ${LONG.includes(f) ? 'sm:col-span-2' : ''}`}>{HINT[f] || f}
+              {LONG.includes(f) ? <textarea rows="3" className="inp mt-1" value={it[f] ?? ''} onChange={(e) => set((d) => { d[tab][i][f] = e.target.value; })} />
+                : <input className="inp mt-1" value={it[f] ?? ''} onChange={(e) => set((d) => { d[tab][i][f] = e.target.value; })} />}</label>))}
+          <div className="sm:col-span-2 flex gap-2">
+            <button className="btn btn2 !py-1 text-sm" onClick={() => i > 0 && set((d) => { [d[tab][i - 1], d[tab][i]] = [d[tab][i], d[tab][i - 1]]; })}>Upar</button>
+            <button className="btn btn2 !py-1 text-sm dn" onClick={() => confirm('Delete karein?') && set((d) => { d[tab].splice(i, 1); })}>Delete</button></div>
+        </div>);
+    })}
+    <button className="btn" onClick={() => set((d) => { d[tab].unshift(blank()); })}>+ Add</button></div>);
 }
 
 function Settings({ D, set }) {
   const s = D.settings; const [tk, setTk] = useState(s.ticker.map((t) => t.s + '|' + t.n).join('\n'));
   const F = [['brand', 'Brand name'], ['tagline', 'Tagline'], ['whatsapp', 'WhatsApp (country code ke saath, bina +)'], ['email', 'Email'], ['phone', 'Phone'], ['address', 'Address'], ['cloudName', 'Cloudinary cloud name'], ['uploadPreset', 'Cloudinary upload preset (Unsigned)']];
+  const TRIM = ['cloudName', 'uploadPreset', 'whatsapp'];
   return (<div className="card p-4 grid sm:grid-cols-2 gap-3">
     {F.map(([f, l]) => (
       <label key={f} className="text-xs text-slate-400">{l}
-        <input className="inp mt-1" value={s[f] ?? ''} onChange={(e) => set((d) => { d.settings[f] = e.target.value.trim(); })} /></label>))}
+        <input className="inp mt-1" value={s[f] ?? ''} onChange={(e) => { const v = e.target.value; set((d) => { d.settings[f] = TRIM.includes(f) ? v.trim() : v; }); }} /></label>))}
+    <div className="sm:col-span-2"><ImageField label="Home page background image (optional, dark image behtar hai)" value={s.heroImage} settings={s} onChange={(v) => set((d) => { d.settings.heroImage = v; })} /></div>
     <label className="text-xs text-slate-400 sm:col-span-2">Live ticker: har line me SYMBOL|Label (Yahoo Finance symbols). Box se bahar click karne par apply hoga.
       <textarea rows="10" className="inp mt-1" value={tk} onChange={(e) => setTk(e.target.value)}
         onBlur={() => set((d) => { d.settings.ticker = tk.split('\n').filter((l) => l.includes('|')).map((l) => { const [a, ...b] = l.split('|'); return { s: a.trim(), n: b.join('|').trim() }; }); })} /></label>
@@ -120,7 +144,7 @@ function Settings({ D, set }) {
 
 export default function Admin() {
   const [ok, setOk] = useState(!!sessionStorage.tm_auth), [pw, setPw] = useState(''), [err, setErr] = useState('');
-  const [D, setD] = useState(() => { try { const d = localStorage.tm_draft; if (d) return JSON.parse(d); } catch {} return structuredClone(C); });
+  const [D, setD] = useState(() => { try { const d = localStorage.tm_draft; if (d) return withDefaults(JSON.parse(d)); } catch {} return withDefaults(structuredClone(C)); });
   const [tab, setTab] = useState('articles'), [dirty, setDirty] = useState(!!localStorage.tm_draft), [msg, setMsg] = useState('');
   useEffect(() => { if (dirty) localStorage.tm_draft = JSON.stringify(D); }, [D, dirty]);
   useEffect(() => { document.title = 'Admin'; }, []);
@@ -135,10 +159,10 @@ export default function Admin() {
       localStorage.removeItem('tm_draft'); setDirty(false); setMsg('Saved: src/data/content.json update ho gayi. Website par changes dikh jayenge.');
     } catch {
       const a = document.createElement('a'); a.href = URL.createObjectURL(new Blob([s], { type: 'application/json' })); a.download = 'content.json'; a.click();
-      setMsg('content.json download ho gayi. Ise src/data/ me replace karke dobara deploy karein.');
+      setMsg('content.json download ho gayi. Ise src/data/ me replace karke git push karein, tab live site par dikhega.');
     }
   };
-  const reset = () => { if (confirm('Local changes hata kar saved content wapas laayein?')) { localStorage.removeItem('tm_draft'); setD(structuredClone(C)); setDirty(false); } };
+  const reset = () => { if (confirm('Local changes hata kar saved content wapas laayein?')) { localStorage.removeItem('tm_draft'); setD(withDefaults(structuredClone(C))); setDirty(false); } };
 
   if (!ok) return (<div className="max-w-sm mx-auto mt-24 card p-6 space-y-3"><h1 className="text-xl font-bold">Admin login</h1>
     <input type="password" className="inp" placeholder="Password" autoComplete="current-password" value={pw} onChange={(e) => setPw(e.target.value)} onKeyDown={(e) => e.key === 'Enter' && login()} />
@@ -149,7 +173,7 @@ export default function Admin() {
       <div className="flex flex-wrap gap-2 text-sm"><button className="btn" onClick={save}>Save</button><button className="btn btn2" onClick={reset}>Reset</button>
         <Link className="btn btn2" to="/" target="_blank">Website</Link><button className="btn btn2" onClick={() => { sessionStorage.removeItem('tm_auth'); setOk(false); }}>Logout</button></div></div>
     {msg && <p className="text-sm up mt-3">{msg}</p>}
-    <p className="text-xs text-slate-400 mt-2">Local (npm run dev) me Save seedha src/data/content.json me likhta hai. Live site par Save file download karta hai; use project me replace karke redeploy karein.</p>
+    <p className="text-xs text-slate-400 mt-2">Local (npm run dev) me Save seedha src/data/content.json me likhta hai. Live site par Save file download karta hai; use project me replace karke git push karein.</p>
     <div className="flex flex-wrap gap-2 mt-5">{['articles', ...Object.keys(SCH), 'settings'].map((t) => <button key={t} onClick={() => setTab(t)} className={`btn !py-1 text-sm ${t === tab ? '' : 'btn2'}`}>{t}</button>)}</div>
     <div className="mt-5">{tab === 'articles' ? <ArticleEditor D={D} set={set} /> : tab === 'settings' ? <Settings D={D} set={set} /> : <ListEditor tab={tab} D={D} set={set} />}</div></div>);
 }

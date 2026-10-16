@@ -1,7 +1,7 @@
 // Live quote engine: public Yahoo Finance chart endpoint. No key, no database.
 // Previous close is taken from daily candles (more reliable than chartPreviousClose).
 export async function handler(e) {
-  const syms = (e.queryStringParameters?.symbols || '').split(',').filter(Boolean).slice(0, 20);
+  const syms = (e.queryStringParameters?.symbols || '').split(',').map((x) => x.trim()).filter(Boolean).slice(0, 40);
   const get = async (s) => {
     try {
       const r = await fetch(`https://query1.finance.yahoo.com/v8/finance/chart/${encodeURIComponent(s)}?interval=1d&range=5d`, { headers: { 'User-Agent': 'Mozilla/5.0' } });
