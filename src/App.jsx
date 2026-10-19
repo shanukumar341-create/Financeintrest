@@ -9,6 +9,7 @@ import Home from './Home.jsx';
 import LiveClasses from './LiveClasses.jsx';
 import ViewDetail, { ViewsList } from './ViewDetail.jsx';
 import Admin from './Admin.jsx';
+import Socials from './social.jsx';
 
 const NAV = [['/', 'Home'], ['/about', 'About'], ['/articles', 'Articles'], ['/courses', 'Courses'], ['/calls', 'Paid Calls'], ['/live-classes', 'Live Classes'], ['/portfolio', 'Portfolio'], ['/contact', 'Contact']];
 
@@ -42,6 +43,7 @@ function Layout() {
       <Brand />
       <div className="flex flex-wrap gap-5">{NAV.map(([to, n]) => <Link key={to} className="hover:text-gold" to={to}>{n}</Link>)}</div>
       <p>{C.settings.email} · {C.settings.phone}</p>
+            <Socials />
       <p className="text-xs max-w-3xl">Disclaimer: Content education ke liye hai, investment advice nahi. Market me risk hota hai aur aap capital kho sakte hain. Invest karne se pehle SEBI-registered advisor se salah lein. Market data public feeds se hai aur indicative hai.</p>
       <p>© {new Date().getFullYear()} {C.settings.brand}</p></div></footer></>);
 }

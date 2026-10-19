@@ -4,6 +4,7 @@ import { ArrowRight, Check, Mail, MapPin, MessageCircle, Phone, Radio } from 'lu
 import C from './data/content.json';
 import LiveChart from './LiveChart.jsx';
 import { Card, Grid, Md, Pic, Quote, Section, biasCls, fmtDate, img, publishedArticles, useQuotes, useTitle, wa } from './lib.jsx';
+import Socials from './social.jsx';
 
 const ArticleCard = ({ a }) => (
   <Link to={`/articles/${a.slug}`} className="block h-full hover:[&>article]:border-gold">
@@ -161,7 +162,7 @@ export function Contact() {
   return (<section className="max-w-5xl mx-auto px-4 pt-14 grid md:grid-cols-2 gap-10">
     <div><h1 className="text-4xl font-extrabold">Contact</h1><p className="mt-4 text-slate-300">Courses, calls ya portfolio management ke baare me puchhein.</p>
       <div className="mt-6 space-y-3">{row(Mail, C.settings.email)}{row(Phone, C.settings.phone)}{row(MapPin, C.settings.address)}</div>
-      <a className="btn mt-6" target="_blank" rel="noopener noreferrer" href={wa('Hi, I have a question')}><MessageCircle size={18} /> Chat on WhatsApp</a></div>
+      <a className="btn mt-6" target="_blank" rel="noopener noreferrer" href={wa('Hi, I have a question')}><MessageCircle size={18} /> Chat on WhatsApp</a> <Socials className="mt-6" /></div>
     <form onSubmit={submit} className="card p-6 space-y-3">
       <p className="hidden"><input name="bot" tabIndex={-1} /></p>
       <label className="block text-sm">Name<input required name="name" className="inp mt-1" /></label>
