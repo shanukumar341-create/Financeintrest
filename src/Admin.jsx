@@ -5,10 +5,11 @@ import C from './data/content.json';
 import { Md, img, slugify } from './lib.jsx';
 import { HOURS, timeLeft } from './helpers.js';
 
+const DEV = import.meta.env.DEV;
 const SCH = {
   views: ['title', 'date', 'bias', 'body', 'image'],
   stocks: ['symbol', 'name', 'action', 'entry', 'target', 'sl', 'note', 'image'],
-  topStocks: ['symbol', 'name', 'liveSymbol','action', 'entry', 'target', 'sl', 'note', 'image'],
+  topStocks: ['symbol', 'name', 'liveSymbol', 'action', 'entry', 'target', 'sl', 'note', 'image'],
   advice: ['title', 'body', 'image'],
   news: ['title', 'source', 'url', 'date', 'image'],
   courses: ['title', 'level', 'duration', 'price', 'desc', 'image'],
@@ -22,6 +23,17 @@ const HINT = { url: 'url (YouTube video ka link)', liveSymbol: 'liveSymbol (opti
 const today = () => new Date().toISOString().slice(0, 10);
 const withDefaults = (d) => ({ ...d, recordings: d.recordings || [], topStocks: d.topStocks || [], articles: d.articles || [] });
 const sha = async (s) => [...new Uint8Array(await crypto.subtle.digest('SHA-256', new TextEncoder().encode(s)))].map((b) => b.toString(16).padStart(2, '0')).join('');
+
+// Live site par save ho chuka draft 15 minute baad hata dete hain (tab tak deploy ho chuka hota hai)
+function loadDraft() {
+  try {
+    const c = localStorage.tm_clean;
+    if (c && Date.now() - Number(c) > 15 * 60e3) { localStorage.removeItem('tm_draft'); localStorage.removeItem('tm_clean'); }
+    const d = localStorage.tm_draft;
+    if (d) return withDefaults(JSON.parse(d));
+  } catch { /* ignore */ }
+  return withDefaults(structuredClone(C));
+}
 
 async function uploadImage(file, s) {
   if (!s.cloudName || !s.uploadPreset) throw new Error('Pehle Settings tab me Cloudinary cloud name aur upload preset daalkar Save karein.');
@@ -138,31 +150,55 @@ function Settings({ D, set }) {
     <label className="text-xs text-slate-400 sm:col-span-2">Live ticker: har line me SYMBOL|Label (Yahoo Finance symbols). Box se bahar click karne par apply hoga.
       <textarea rows="10" className="inp mt-1" value={tk} onChange={(e) => setTk(e.target.value)}
         onBlur={() => set((d) => { d.settings.ticker = tk.split('\n').filter((l) => l.includes('|')).map((l) => { const [a, ...b] = l.split('|'); return { s: a.trim(), n: b.join('|').trim() }; }); })} /></label>
-    <label className="text-xs text-slate-400 sm:col-span-2">Naya admin password (khali chhodein to wahi rahega)
-      <input type="password" className="inp mt-1" onBlur={async (e) => { if (e.target.value) { const h = await sha(e.target.value); set((d) => { d.settings.adminHash = h; }); } }} /></label></div>);
+    <p className="text-xs text-slate-400 sm:col-span-2">Admin password badalna ho to Netlify me Project configuration, Environment variables, <b>ADMIN_PASSWORD</b> badlein aur site dobara deploy karein.</p></div>);
 }
 
 export default function Admin() {
-  const [ok, setOk] = useState(!!sessionStorage.tm_auth), [pw, setPw] = useState(''), [err, setErr] = useState('');
-  const [D, setD] = useState(() => { try { const d = localStorage.tm_draft; if (d) return withDefaults(JSON.parse(d)); } catch {} return withDefaults(structuredClone(C)); });
-  const [tab, setTab] = useState('articles'), [dirty, setDirty] = useState(!!localStorage.tm_draft), [msg, setMsg] = useState('');
+  const [ok, setOk] = useState(!!(sessionStorage.tm_pw || (DEV && sessionStorage.tm_auth))), [pw, setPw] = useState(''), [err, setErr] = useState('');
+  const [D, setD] = useState(loadDraft);
+  const [tab, setTab] = useState('articles'), [busy, setBusy] = useState(false), [msg, setMsg] = useState(null);
+  const [dirty, setDirty] = useState(() => !!localStorage.tm_draft && !localStorage.tm_clean);
   useEffect(() => { if (dirty) localStorage.tm_draft = JSON.stringify(D); }, [D, dirty]);
   useEffect(() => { document.title = 'Admin'; }, []);
-  const set = (fn) => { setD((d) => { const n = structuredClone(d); fn(n); return n; }); setDirty(true); };
-  const login = async () => { if ((await sha(pw)) === C.settings.adminHash) { sessionStorage.tm_auth = 1; setOk(true); } else setErr('Galat password.'); };
+  const set = (fn) => { setD((d) => { const n = structuredClone(d); fn(n); return n; }); setDirty(true); localStorage.removeItem('tm_clean'); };
+  const logout = () => { sessionStorage.removeItem('tm_pw'); sessionStorage.removeItem('tm_auth'); setOk(false); };
+
+  const login = async () => {
+    setErr('');
+    try {
+      if (DEV) {
+        const h = C.settings.adminHash;
+        if (h && (await sha(pw)) !== h) return setErr('Galat password.');
+        sessionStorage.tm_auth = '1';
+      } else {
+        const r = await fetch('/api/save-content', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ action: 'check', password: pw }) });
+        const j = await r.json().catch(() => ({}));
+        if (!r.ok) return setErr(j.error || 'Login fail ho gaya. Netlify me save-content function aur environment variables check karein.');
+        sessionStorage.tm_pw = pw;
+      }
+      setOk(true);
+    } catch { setErr('Server se connect nahi ho paya.'); }
+  };
 
   const save = async () => {
-    const s = JSON.stringify(D, null, 1);
+    setBusy(true); setMsg(null);
     try {
-      const r = await fetch('/__save', { method: 'POST', body: s });
-      if ((await r.text()) !== 'ok') throw 0;
-      localStorage.removeItem('tm_draft'); setDirty(false); setMsg('Saved: src/data/content.json update ho gayi. Website par changes dikh jayenge.');
-    } catch {
-      const a = document.createElement('a'); a.href = URL.createObjectURL(new Blob([s], { type: 'application/json' })); a.download = 'content.json'; a.click();
-      setMsg('content.json download ho gayi. Ise src/data/ me replace karke git push karein, tab live site par dikhega.');
-    }
+      if (DEV) {
+        const r = await fetch('/__save', { method: 'POST', body: JSON.stringify(D, null, 1) });
+        if ((await r.text()) !== 'ok') throw new Error('Local save fail ho gaya.');
+        localStorage.removeItem('tm_draft'); localStorage.removeItem('tm_clean'); setDirty(false);
+        setMsg({ t: 'ok', s: 'Saved: src/data/content.json update ho gayi (local).' });
+      } else {
+        const r = await fetch('/api/save-content', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ password: sessionStorage.tm_pw, content: D }) });
+        const j = await r.json().catch(() => ({}));
+        if (r.status === 401) { logout(); return; }
+        if (!r.ok) throw new Error(j.error || 'Save fail ho gaya.');
+        localStorage.tm_clean = String(Date.now()); setDirty(false);
+        setMsg({ t: 'ok', s: 'Saved! Website 1 se 2 minute me apne aap update ho jayegi (Netlify deploy chal raha hai).' });
+      }
+    } catch (x) { setMsg({ t: 'err', s: x.message }); } finally { setBusy(false); }
   };
-  const reset = () => { if (confirm('Local changes hata kar saved content wapas laayein?')) { localStorage.removeItem('tm_draft'); setD(withDefaults(structuredClone(C))); setDirty(false); } };
+  const reset = () => { if (confirm('Local changes hata kar published content wapas laayein?')) { localStorage.removeItem('tm_draft'); localStorage.removeItem('tm_clean'); setD(withDefaults(structuredClone(C))); setDirty(false); } };
 
   if (!ok) return (<div className="max-w-sm mx-auto mt-24 card p-6 space-y-3"><h1 className="text-xl font-bold">Admin login</h1>
     <input type="password" className="inp" placeholder="Password" autoComplete="current-password" value={pw} onChange={(e) => setPw(e.target.value)} onKeyDown={(e) => e.key === 'Enter' && login()} />
@@ -170,10 +206,10 @@ export default function Admin() {
 
   return (<div className="max-w-5xl mx-auto px-4 py-6">
     <div className="flex flex-wrap items-center gap-2 justify-between"><h1 className="text-xl font-bold">Admin panel {dirty && <span className="text-gold text-sm">● unsaved</span>}</h1>
-      <div className="flex flex-wrap gap-2 text-sm"><button className="btn" onClick={save}>Save</button><button className="btn btn2" onClick={reset}>Reset</button>
-        <Link className="btn btn2" to="/" target="_blank">Website</Link><button className="btn btn2" onClick={() => { sessionStorage.removeItem('tm_auth'); setOk(false); }}>Logout</button></div></div>
-    {msg && <p className="text-sm up mt-3">{msg}</p>}
-    <p className="text-xs text-slate-400 mt-2">Local (npm run dev) me Save seedha src/data/content.json me likhta hai. Live site par Save file download karta hai; use project me replace karke git push karein.</p>
+      <div className="flex flex-wrap gap-2 text-sm"><button className="btn" onClick={save} disabled={busy}>{busy ? 'Saving...' : 'Save & Publish'}</button><button className="btn btn2" onClick={reset}>Reset</button>
+        <Link className="btn btn2" to="/" target="_blank">Website</Link><button className="btn btn2" onClick={logout}>Logout</button></div></div>
+    {msg && <p className={`text-sm mt-3 ${msg.t === 'ok' ? 'up' : 'dn'}`}>{msg.s}</p>}
+    <p className="text-xs text-slate-400 mt-2">{DEV ? 'Local mode: Save src/data/content.json me likhta hai.' : 'Save & Publish seedha website ko update karta hai. Koi file download ya upload nahi karni.'}</p>
     <div className="flex flex-wrap gap-2 mt-5">{['articles', ...Object.keys(SCH), 'settings'].map((t) => <button key={t} onClick={() => setTab(t)} className={`btn !py-1 text-sm ${t === tab ? '' : 'btn2'}`}>{t}</button>)}</div>
     <div className="mt-5">{tab === 'articles' ? <ArticleEditor D={D} set={set} /> : tab === 'settings' ? <Settings D={D} set={set} /> : <ListEditor tab={tab} D={D} set={set} />}</div></div>);
 }
