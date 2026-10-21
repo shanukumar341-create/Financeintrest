@@ -217,6 +217,30 @@
  "recordings": [],
  "topStocks": [
   {
+   "symbol": "",
+   "name": "",
+   "liveSymbol": "",
+   "action": "",
+   "entry": "",
+   "target": "",
+   "sl": "",
+   "note": "",
+   "image": "",
+   "postedAt": "2026-10-21T10:29:45.245Z"
+  },
+  {
+   "symbol": "HINDCOPPER",
+   "name": "SELL ON RISE WITH GIVEN SL",
+   "liveSymbol": "",
+   "action": "SELL",
+   "entry": "430",
+   "target": "410,388",
+   "sl": "448",
+   "note": "FOLLOW GIVEN TARGET & STOPLOSS ",
+   "image": "https://res.cloudinary.com/hbshez7n/image/upload/v1792578700/spiw7fnwd10gilzsa1ya.png",
+   "postedAt": "2026-10-21T10:28:20.561Z"
+  },
+  {
    "symbol": "TECHM",
    "name": "BREAKOUT",
    "liveSymbol": "",
