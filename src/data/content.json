@@ -78,6 +78,16 @@
  },
  "articles": [
   {
+   "slug": "",
+   "title": "",
+   "category": "Market Analysis",
+   "date": "2026-10-19",
+   "summary": "",
+   "cover": "",
+   "body": "",
+   "published": true
+  },
+  {
    "slug": "why-risk-management-comes-first-in-trading-and-investing",
    "title": "Why Risk Management Comes First in Trading and Investing",
    "category": "Trading Psychology",
@@ -205,5 +215,30 @@
   }
  ],
  "recordings": [],
- "topStocks": []
+ "topStocks": [
+  {
+   "symbol": "",
+   "name": "",
+   "liveSymbol": "",
+   "action": "",
+   "entry": "",
+   "target": "",
+   "sl": "",
+   "note": "",
+   "image": "",
+   "postedAt": "2026-10-21T10:26:13.026Z"
+  },
+  {
+   "symbol": "RELIANCE",
+   "name": "SELL ON RISE WITH GIVEN STOP-LOSS",
+   "liveSymbol": "RELIANCE",
+   "action": "SELL",
+   "entry": "1212",
+   "target": "1188 & 1167",
+   "sl": "1233",
+   "note": "SELL ON RISE WITH GIVEN SL",
+   "image": "https://res.cloudinary.com/hbshez7n/image/upload/v1792578315/gp6d0yfa5akgeauaox5m.png",
+   "postedAt": "2026-10-21T10:22:59.276Z"
+  }
+ ]
 }
