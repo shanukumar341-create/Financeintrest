@@ -231,36 +231,36 @@
    "name": "SELL ON RISE WITH GIVEN SL",
    "liveSymbol": "",
    "action": "SELL",
-   "entry": "430",
-   "target": "410,388",
-   "sl": "448",
+   "entry": "403",
+   "target": "388",
+   "sl": "410",
    "note": "FOLLOW GIVEN TARGET & STOPLOSS ",
    "image": "https://res.cloudinary.com/hbshez7n/image/upload/v1792578700/spiw7fnwd10gilzsa1ya.png",
-   "postedAt": "2026-10-21T10:28:20.561Z"
+   "postedAt": "2026-10-23T10:47:47.230Z"
   },
   {
    "symbol": "TECHM",
    "name": "BREAKOUT",
    "liveSymbol": "",
    "action": "BUY",
-   "entry": "1820",
-   "target": "1888",
-   "sl": "1803",
+   "entry": "1794",
+   "target": "1834",
+   "sl": "1775",
    "note": "TRADE WITH GIVEN SL",
    "image": "https://res.cloudinary.com/hbshez7n/image/upload/v1792578489/uon6xbh1ndgko9fuhw3r.png",
-   "postedAt": "2026-10-21T10:26:13.026Z"
+   "postedAt": "2026-10-23T10:47:43.498Z"
   },
   {
    "symbol": "RELIANCE",
    "name": "SELL ON RISE WITH GIVEN STOP-LOSS",
    "liveSymbol": "RELIANCE",
    "action": "SELL",
-   "entry": "1212",
-   "target": "1188 & 1167",
-   "sl": "1233",
+   "entry": "1184",
+   "target": "1167",
+   "sl": "1199",
    "note": "SELL ON RISE WITH GIVEN SL",
    "image": "https://res.cloudinary.com/hbshez7n/image/upload/v1792578315/gp6d0yfa5akgeauaox5m.png",
-   "postedAt": "2026-10-21T10:22:59.276Z"
+   "postedAt": "2026-10-23T10:47:50.698Z"
   }
  ]
 }
